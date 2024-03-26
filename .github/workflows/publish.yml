@@ -28,14 +28,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Android APK
-          path: artifacts/
+          path: artifacts/Android APK.zip
       
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: v${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
+          release_name: Lemonade ${{ github.run_number }}
           body: |
             Description of the release goes here.
           draft: false
@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/Android_APK.apk
-          asset_name: Android_APK.apk
+          asset_path: artifacts/Android APK.zip
+          asset_name: Android APK.zip
           asset_content_type: application/vnd.android.package-archive
           
