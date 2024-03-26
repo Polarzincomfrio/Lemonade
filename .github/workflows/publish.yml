@@ -1,10 +1,10 @@
 name: Release Workflow
 
 on:
-  workflow_run:
-    workflows: ["Lemonade CI Builds"]
-    types:
-      - completed
+  workflow_dispatch:
+
+permissions:
+  actions: write
 
 jobs:
   release:
