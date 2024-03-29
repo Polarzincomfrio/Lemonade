@@ -38,6 +38,7 @@
                 android:singleLine="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:ellipsize="none"
+                android:requiresFadingEdge="horizontal"
                 tools:text="Title" />
 
             <TextView
@@ -50,6 +51,7 @@
                 android:singleLine="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:ellipsize="none"
+                android:requiresFadingEdge="horizontal"
                 tools:text="Company" />
 
         </LinearLayout>
