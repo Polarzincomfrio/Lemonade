@@ -41,7 +41,7 @@ class CheatsAdapter(
     }
 
     inner class CheatViewHolder(private val binding: ListItemCheatBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener,
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener,
         CompoundButton.OnCheckedChangeListener {
         private lateinit var viewModel: CheatsViewModel
         private lateinit var cheat: Cheat
