@@ -1,0 +1,86 @@
+name: decompile to java
+
+on:
+  push:
+    branches:
+      - decompile
+  pull_request:
+
+jobs:
+  Android-ARM64:
+      runs-on: ubuntu-latest
+
+      strategy:
+        matrix:
+          build_type:
+            - release
+      env:
+        CCACHE_DIR: ${{ github.workspace }}/.ccache
+
+      steps:
+      - name: Set BUILD_TYPE variable
+        run: echo "BUILD_TYPE=${{ matrix.build_type }}" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v4
+      - name: Fetch submodules
+        run: git submodule update --init --recursive
+
+      - name: Setup Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ${{ env.CCACHE_DIR }}
+          key: ${{ runner.os }}-android-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-android-
+
+        env:
+           SEGMENT_DOWNLOAD_TIMEOUT_MINS: '1'
+           
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Deps
+        run: |
+            sudo add-apt-repository -y ppa:theofficialgman/gpu-tools
+            sudo apt-get update -y
+            sudo apt-get install ccache glslang-dev glslang-tools apksigner -y
+
+      - name: Build
+        run: |
+          chmod +x ./.ci/export.sh
+          ./.ci/export.sh
+          
+          # Build the Android app with Gradle
+          cd src/android
+          ./gradlew assemble${{ env.BUILD_TYPE }}
+          ls -R app/build/outputs
+          cd ../..
+
+      - name: Extract APK
+        run: |
+           # Install apktool
+           sudo apt-get install -y apktool
+           # Extract APK files
+            apktool d ./src/android/app/build/outputs/apk/release/app-release.apk -o extracted_apk
+
+      - name: Decompile to Java
+        run: |
+         # Download CFR
+         wget https://github.com/leibnitz27/cfr/releases/download/0.150/cfr-0.150.jar
+         # Create a directory for decompiled source
+         mkdir decompiled_source
+         # Decompile classes
+         java -jar cfr-0.150.jar extracted_apk/classes.dex --outputdir decompiled_source
+
+      - name: Upload Decompiled Source
+        uses: actions/upload-artifact@v4
+        with:
+           name: Decompiled-Source
+           path: decompiled_source
