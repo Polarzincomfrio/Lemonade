@@ -54,6 +54,7 @@ class CheatsAdapter(
             binding.textName.text = this.cheat.getName()
             binding.cheatSwitch.isChecked = this.cheat.getEnabled()
             binding.cheatContainer.setOnClickListener(this)
+            binding.cheatContainer.setOnLongClickListener(this)
             binding.cheatSwitch.setOnCheckedChangeListener(this)
         }
 
