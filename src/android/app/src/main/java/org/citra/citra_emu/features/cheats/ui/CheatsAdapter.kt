@@ -61,9 +61,10 @@ class CheatsAdapter(
             binding.cheatSwitch.isChecked = !binding.cheatSwitch.isChecked
         }
 
-        override fun onLongClick(root: View) {
+        override fun onLongClick(root: View): Boolean {
             viewModel.setSelectedCheat(cheat, position)
             viewModel.openDetailsView()
+            return true
         }
 
         override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
