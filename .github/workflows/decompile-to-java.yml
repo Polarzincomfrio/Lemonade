@@ -68,7 +68,7 @@ jobs:
            # Install apktool
            sudo apt-get install -y apktool
            # Extract APK files
-            apktool d ./src/android/app/build/outputs/apk/release/app-release.apk -o extracted_apk
+            apktool d ./src/android/app/build/outputs/apk/canary/release/app-canary-release.apk -o extracted_apk
 
       - name: Decompile to Java
         run: |
