@@ -70,15 +70,24 @@ jobs:
            # Extract APK files
             apktool d ./src/android/app/build/outputs/apk/canary/release/app-canary-release.apk -o extracted_apk
 
-      - name: Decompile to Java
+      - name: Install dex2jar
         run: |
-         # Download CFR
-         wget https://github.com/leibnitz27/cfr/releases/download/0.150/cfr-0.150.jar
-         # Create a directory for decompiled source
-         mkdir decompiled_source
-         # Decompile classes
-         java -jar cfr-0.150.jar extracted_apk/classes.dex --outputdir decompiled_source
+          wget https://github.com/pxb1988/dex2jar/releases/download/2.0/dex-tools-2.0.zip
+          unzip dex-tools-2.0.zip -d dex2jar
+          chmod +x dex2jar/d2j-dex2jar.sh
 
+      - name: Convert dex to jar
+        run: |
+          ./dex2jar/d2j-dex2jar.sh -f ./src/android/app/build/outputs/apk/canary/release/app-canary-release.apk -o output.jar
+          
+      - name: Decompile to Java (CFR)
+        run: |
+          wget https://github.com/leibnitz27/cfr/releases/download/0.150/cfr-0.150.jar
+          # Create a directory for decompiled source, if not already existing
+          mkdir -p decompiled_source
+          # Decompile the jar file to Java source code
+          java -jar cfr-0.150.jar output.jar --outputdir decompiled_source
+          
       - name: Upload Decompiled Source
         uses: actions/upload-artifact@v4
         with:
