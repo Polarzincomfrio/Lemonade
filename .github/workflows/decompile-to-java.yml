@@ -78,6 +78,7 @@ jobs:
 
       - name: Convert dex to jar
         run: |
+          chmod +x ./dex2jar/dex2jar-2.0/d2j-dex2jar.sh
           ./dex2jar/dex2jar-2.0/d2j-dex2jar.sh -f ./src/android/app/build/outputs/apk/canary/release/app-canary-release.apk -o output.jar
           
       - name: Decompile to Java (CFR)
