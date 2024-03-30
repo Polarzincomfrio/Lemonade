@@ -69,18 +69,7 @@ object GameIconUtils {
             .target(imageView)
             .error(R.drawable.no_icon)
             .build()
-        val target = object : Target {
-            override fun onSuccess(result: Drawable) {
-                val bitmap = result.toBitmap(config = Bitmap.Config.ARGB_8888)
-                imageView.setImageBitmap(bitmap)
-            }
-
-            override fun onError(error: Drawable?) {
-                // Handle error
-                imageView.setImageResource(R.drawable.no_icon)
-            }
-        }
-
-        imageLoader.enqueue(request, target)
+        imageLoader.execute(request)
+            .drawable!!.toBitmap(config = Bitmap.Config.ARGB_8888)
     }
 }
