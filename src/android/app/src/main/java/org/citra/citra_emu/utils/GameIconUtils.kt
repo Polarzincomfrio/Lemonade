@@ -6,6 +6,8 @@ package org.citra.citra_emu.utils
 
 import android.graphics.Bitmap
 import android.widget.ImageView
+import android.graphics.Canvas
+import android.graphics.Matrix
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentActivity
 import coil.ImageLoader
