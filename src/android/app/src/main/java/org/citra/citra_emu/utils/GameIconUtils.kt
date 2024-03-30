@@ -69,7 +69,6 @@ object GameIconUtils {
             .target(imageView)
             .error(R.drawable.no_icon)
             .build()
-        imageLoader.execute(request)
-            .drawable!!.toBitmap(config = Bitmap.Config.ARGB_8888)
+        imageLoader.enqueue(request)
     }
 }
