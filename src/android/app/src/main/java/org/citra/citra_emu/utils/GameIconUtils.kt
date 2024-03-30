@@ -35,10 +35,32 @@ class GameIconFetcher(
     }
 
     private fun getGameIcon(vector: IntArray?): Bitmap? {
-        val bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.RGB_565)
-        bitmap.copyPixelsFromBuffer(IntBuffer.wrap(vector))
-        return bitmap
-    }
+        // Check for null or empty vector
+        if (vector == null || vector.isEmpty()) return null
+
+        try {
+            // Assuming the input vector represents a square image, calculate the dimension
+            val dimension = Math.sqrt(vector.size.toDouble()).toInt()
+        
+            // Create a temporary bitmap with the original dimension for better quality
+            val tempBitmap = Bitmap.createBitmap(dimension, dimension, Bitmap.Config.ARGB_8888)
+            tempBitmap.copyPixelsFromBuffer(IntBuffer.wrap(vector))
+
+            // Create the final bitmap with desired dimensions and ARGB_8888 for better quality
+            val finalBitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888)
+        
+            // Scale the tempBitmap to fit into the finalBitmap
+            val canvas = Canvas(finalBitmap)
+            val scale = 48f / dimension
+            val matrix = Matrix().apply { postScale(scale, scale) }
+            canvas.drawBitmap(tempBitmap, matrix, null)
+
+            return finalBitmap
+         } catch (e: Exception) {
+             e.printStackTrace()
+             return null
+         }
+     }
 
     class Factory : Fetcher.Factory<Game> {
         override fun create(data: Game, options: Options, imageLoader: ImageLoader): Fetcher =
