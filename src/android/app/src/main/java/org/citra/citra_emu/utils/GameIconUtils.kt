@@ -35,7 +35,7 @@ class GameIconFetcher(
     }
 
     private fun getGameIcon(vector: IntArray?): Bitmap? {
-        val bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.RGB_565)
         bitmap.copyPixelsFromBuffer(IntBuffer.wrap(vector))
         return bitmap
     }
@@ -69,6 +69,18 @@ object GameIconUtils {
             .target(imageView)
             .error(R.drawable.no_icon)
             .build()
-        imageLoader.enqueue(request)
+        val target = object : Target {
+            override fun onSuccess(result: Drawable) {
+                val bitmap = result.toBitmap(config = Bitmap.Config.ARGB_8888)
+                imageView.setImageBitmap(bitmap)
+            }
+
+            override fun onError(error: Drawable?) {
+                // Handle error
+                imageView.setImageResource(R.drawable.no_icon)
+            }
+        }
+
+        imageLoader.enqueue(request, target)
     }
 }
