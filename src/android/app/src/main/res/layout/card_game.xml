@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:shapeAppearance="?attr/shapeAppearanceCornerLarge"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="15dp"
         app:strokeWidth="0dp">
        
         <ImageView
