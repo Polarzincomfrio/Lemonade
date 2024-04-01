@@ -42,7 +42,7 @@ CubebSink::CubebSink(std::string_view target_device_name) : impl(std::make_uniqu
         .layout = CUBEB_LAYOUT_STEREO,
     };
 
-    u32 minimum_latency = 100 * native_sample_rate / 1000; // Firefox default
+    u32 minimum_latency = 50 * native_sample_rate / 1000; // Firefox default
     if (cubeb_get_min_latency(impl->ctx, &params, &minimum_latency) != CUBEB_OK) {
         LOG_WARNING(Audio_Sink,
                     "Error getting minimum output latency, falling back to default latency.");
