@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.panda3ds.pandroid.R;
-import com.panda3ds.pandroid.utils.CompatUtils;
+import org.citra.citra_emu.R;
+import org.citra.citra_emu.utils.CompatUtils;
 
 import org.jetbrains.annotations.NotNull;
 
