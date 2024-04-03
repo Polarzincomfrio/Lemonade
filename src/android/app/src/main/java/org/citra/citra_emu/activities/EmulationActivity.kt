@@ -27,6 +27,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
+import android.os.Build
+import android.util.PictureInPictureParams
 import org.citra.citra_emu.CitraApplication
 import org.citra.citra_emu.NativeLibrary
 import org.citra.citra_emu.R
@@ -81,6 +83,15 @@ class EmulationActivity : AppCompatActivity() {
 
         // Set these options now so that the SurfaceView the game renders into is the right size.
         enableFullscreenImmersive()
+
+    if (BooleanSetting.PIP_SUPPORT.boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val builder = PictureInPictureParams.Builder()
+                builder.setAutoEnterEnabled(true)
+                builder.setSeamlessResizeEnabled(true)
+         }
+    }
+        
 
         // Override Citra core INI with the one set by our in game menu
         NativeLibrary.swapScreens(
