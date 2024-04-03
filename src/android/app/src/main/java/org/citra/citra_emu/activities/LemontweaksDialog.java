@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
+import org.citra.citra_emu.activities.BaseSheetDialog;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +21,7 @@ import org.citra.citra_emu.R;
 
 import java.util.ArrayList;
 
-public class LemontweaksDialog extends DialogFragment {
+public class LemontweaksDialog extends BaseSheetDialog {
 
     private SettingsAdapter adapter;
 
@@ -31,8 +31,8 @@ public class LemontweaksDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         ViewGroup contents = (ViewGroup) requireActivity().getLayoutInflater().inflate(R.layout.dialog_lemontweaks, null);
 
         RecyclerView recyclerView = contents.findViewById(R.id.list_settings);
@@ -42,8 +42,7 @@ public class LemontweaksDialog extends DialogFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
 
-        builder.setView(contents);
-        return builder.create();
+        setContentView(contents);
     }
 
     @Override
