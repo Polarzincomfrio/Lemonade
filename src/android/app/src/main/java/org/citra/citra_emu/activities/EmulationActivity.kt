@@ -117,9 +117,14 @@ class EmulationActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (BooleanSetting.PIP_SUPPORT.boolean) {
-                setPictureInPictureParams(new PictureInPictureParams.Builder().setAutoEnterEnabled(true).build());
+                setPictureInPictureParams(
+                    PictureInPictureParams.Builder()
+                        .setAutoEnterEnabled(true)
+                        .build()
+                )
             }
         }
+
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
