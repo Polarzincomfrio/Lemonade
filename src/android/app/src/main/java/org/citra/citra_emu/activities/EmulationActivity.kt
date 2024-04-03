@@ -84,16 +84,6 @@ class EmulationActivity : AppCompatActivity() {
         // Set these options now so that the SurfaceView the game renders into is the right size.
         enableFullscreenImmersive()
 
-    if (BooleanSetting.PIP_SUPPORT.boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val builder = PictureInPictureParams.Builder()
-                builder.setAutoEnterEnabled(true)
-                builder.setSeamlessResizeEnabled(true)
-                enterPictureInPictureMode(builder.build())
-         }
-    }
-        
-
         // Override Citra core INI with the one set by our in game menu
         NativeLibrary.swapScreens(
             EmulationMenuSettings.swapScreens,
@@ -124,6 +114,12 @@ class EmulationActivity : AppCompatActivity() {
         window.attributes = attributes
 
         enableFullscreenImmersive()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (BooleanSetting.PIP_SUPPORT.boolean) {
+                setPictureInPictureParams(new PictureInPictureParams.Builder().setAutoEnterEnabled(true).build());
+            }
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
