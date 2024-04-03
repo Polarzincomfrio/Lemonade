@@ -28,7 +28,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import android.os.Build
-import android.util.PictureInPictureParams
+import android.app.PictureInPictureParams
 import org.citra.citra_emu.CitraApplication
 import org.citra.citra_emu.NativeLibrary
 import org.citra.citra_emu.R
