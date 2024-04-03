@@ -33,7 +33,7 @@ public class LemontweaksDialog extends BaseSheetDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewGroup contents = (ViewGroup) requireActivity().getLayoutInflater().inflate(R.layout.dialog_lemontweaks, null);
+        setContentView(R.layout.dialog_lemontweaks);
 
         RecyclerView recyclerView = contents.findViewById(R.id.list_settings);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
@@ -41,8 +41,6 @@ public class LemontweaksDialog extends BaseSheetDialog {
         adapter = new SettingsAdapter(requireContext());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
-
-        setContentView(contents);
     }
 
     @Override
