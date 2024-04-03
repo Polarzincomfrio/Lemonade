@@ -85,7 +85,7 @@ class EmulationActivity : AppCompatActivity() {
         enableFullscreenImmersive()
 
     if (BooleanSetting.PIP_SUPPORT.boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val builder = PictureInPictureParams.Builder()
                 builder.setAutoEnterEnabled(true)
                 builder.setSeamlessResizeEnabled(true)
