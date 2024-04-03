@@ -89,6 +89,7 @@ class EmulationActivity : AppCompatActivity() {
             val builder = PictureInPictureParams.Builder()
                 builder.setAutoEnterEnabled(true)
                 builder.setSeamlessResizeEnabled(true)
+                enterPictureInPictureMode(builder.build())
          }
     }
         
