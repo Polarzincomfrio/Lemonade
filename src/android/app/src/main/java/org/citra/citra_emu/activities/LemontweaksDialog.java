@@ -25,8 +25,8 @@ public class LemontweaksDialog extends BaseSheetDialog {
 
     private SettingsAdapter adapter;
 
-    public static LemontweaksDialog newInstance() {
-        return new LemontweaksDialog();
+    public LemontweaksDialog(@NonNull Context context) {
+        super(context);
     }
 
     @NonNull
