@@ -10,8 +10,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import com.google.android.material.color.DynamicColors
-import com.google.android.material.color.DynamicColorsOptions
 import org.citra.citra_emu.utils.DirectoryInitialization
 import org.citra.citra_emu.utils.DocumentsTree
 import org.citra.citra_emu.utils.GpuDriverHelper
@@ -56,9 +54,6 @@ class CitraApplication : Application() {
         if (PermissionsHandler.hasWriteAccess(applicationContext)) {
             DirectoryInitialization.start()
         }
-
-        val dynamicColorsOptions = DynamicColorsOptions.Builder().build()
-        DynamicColors.applyToActivitiesIfAvailable(this, dynamicColorsOptions)
 
         NativeLibrary.logDeviceInfo()
         logDeviceInfo()
