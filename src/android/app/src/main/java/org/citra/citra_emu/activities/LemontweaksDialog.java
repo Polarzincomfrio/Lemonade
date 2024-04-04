@@ -15,7 +15,7 @@ import org.citra.citra_emu.activities.BaseSheetDialog;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import org.citra.citra_emu.NativeLibrary;
 import org.citra.citra_emu.R;
 
@@ -103,7 +103,7 @@ public class LemontweaksDialog extends BaseSheetDialog {
     private class SwitchSettingViewHolder extends SettingViewHolder implements CompoundButton.OnCheckedChangeListener {
         private SettingsItem item;
         private TextView textSettingName;
-        private SwitchMaterial switchMaterial;
+        private MaterialSwitch materialSwitch;
 
         SwitchSettingViewHolder(View itemView) {
             super(itemView);
@@ -112,23 +112,23 @@ public class LemontweaksDialog extends BaseSheetDialog {
         @Override
         protected void findViews(View root) {
             textSettingName = root.findViewById(R.id.text_setting_name);
-            switchMaterial = root.findViewById(R.id.switch_widget);
-            switchMaterial.setOnCheckedChangeListener(this);
+            materialSwitch = root.findViewById(R.id.switch_widget);
+            materialSwitch.setOnCheckedChangeListener(this);
         }
 
         @Override
         public void bind(SettingsItem item) {
             this.item = item;
             if (textSettingName != null) textSettingName.setText(item.getName());
-            if (switchMaterial != null) switchMaterial.setChecked(item.getValue() > 0);
+            if (materialSwitch != null) materialSwitch.setChecked(item.getValue() > 0);
         }
 
         @Override
         public void onClick(View v) {
             super.onClick(v);
-            if (switchMaterial != null) {
-                switchMaterial.toggle();
-                if (item != null) item.setValue(switchMaterial.isChecked() ? 1 : 0);
+            if (materialSwitch != null) {
+                materialSwitch.toggle();
+                if (item != null) item.setValue(materialSwitch.isChecked() ? 1 : 0);
             }
         }
 
