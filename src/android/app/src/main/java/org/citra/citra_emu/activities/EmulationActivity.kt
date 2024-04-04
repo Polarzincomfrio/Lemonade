@@ -121,7 +121,7 @@ class EmulationActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (BooleanSetting.PIP_SUPPORT.boolean) {
                 val builder = PictureInPictureParams.Builder()
-                builder.setAspectRatio(Rational(null))
+                builder.setAspectRatio(null)
                 enterPictureInPictureMode(builder.build())
             }
         }
