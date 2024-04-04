@@ -30,8 +30,7 @@ object ThemeUtil {
     fun setTheme(activity: AppCompatActivity) {
         setThemeMode(activity)
         if (preferences.getBoolean(Settings.PREF_MATERIAL_YOU, false)) {
-            val dynamicColorsOptions = DynamicColorsOptions.Builder().setPrecondition { _, _ -> true }.build()
-            DynamicColors.applyToActivitiesIfAvailable(CitraApplication.appContext, dynamicColorsOptions)
+            activity.setTheme(R.style.Theme_Lemonade_Main_MaterialYou)
         } else {
             activity.setTheme(R.style.Theme_Lemonade_Main)
         }
