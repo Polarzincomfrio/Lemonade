@@ -117,14 +117,12 @@ class EmulationActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (BooleanSetting.PIP_SUPPORT.boolean) {
-                setPictureInPictureParams(
-                    PictureInPictureParams.Builder()
-                        .setAutoEnterEnabled(true)
-                        .build()
-                )
+                val builder = PictureInPictureParams.Builder()
+                builder.setAutoEnterEnabled(true)
+                builder.setSeamlessResizeEnabled(true)
+                enterPictureInPictureMode(builder.build())
             }
         }
-
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
