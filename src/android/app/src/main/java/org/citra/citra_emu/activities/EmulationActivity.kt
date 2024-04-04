@@ -46,6 +46,7 @@ import org.citra.citra_emu.utils.EmulationLifecycleUtil
 import org.citra.citra_emu.utils.EmulationMenuSettings
 import org.citra.citra_emu.utils.ThemeUtil
 import org.citra.citra_emu.viewmodel.EmulationViewModel
+import org.citra_citra_emu.activities.GameAboutDialog
 
 class EmulationActivity : AppCompatActivity() {
     private val preferences: SharedPreferences
@@ -191,13 +192,8 @@ class EmulationActivity : AppCompatActivity() {
     }
 
     fun displayLemontweaks() {
-        LemontweaksDialog.newInstance().showWithAnimations(
-                supportFragmentManager,
-                "LemontweaksDialog",
-                // TODO: anim need to be changed
-                R.anim.nav_default_pop_enter_anim,
-                R.anim.nav_default_pop_exit_anim
-        )
+        val dialog = LemontweaksDialog(requireActivity())
+            dialog.show()
     }
 
     private fun enableFullscreenImmersive() {
