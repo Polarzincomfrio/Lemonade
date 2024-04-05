@@ -46,7 +46,7 @@ import org.citra.citra_emu.utils.EmulationLifecycleUtil
 import org.citra.citra_emu.utils.EmulationMenuSettings
 import org.citra.citra_emu.utils.ThemeUtil
 import org.citra.citra_emu.viewmodel.EmulationViewModel
-import org.citra_citra_emu.activities.GameAboutDialog
+import org.citra.citra_emu.activities.LemontweaksDialog
 
 class EmulationActivity : AppCompatActivity() {
     private val preferences: SharedPreferences
