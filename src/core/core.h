@@ -184,15 +184,6 @@ public:
 
     /**
      * Gets a reference to the emulated CPU.
-     * @returns A reference to the emulated CPU.
-     */
-
-    [[nodiscard]] ARM_Interface& GetRunningCore() {
-        return *running_core;
-    };
-
-    /**
-     * Gets a reference to the emulated CPU.
      * @param core_id The id of the core requested.
      * @returns A reference to the emulated CPU.
      */
@@ -381,7 +372,6 @@ private:
 
     /// ARM11 CPU core
     std::vector<std::shared_ptr<ARM_Interface>> cpu_cores;
-    ARM_Interface* running_core = nullptr;
 
     /// DSP core
     std::unique_ptr<AudioCore::DspInterface> dsp_core;
@@ -460,7 +450,7 @@ private:
 };
 
 [[nodiscard]] inline ARM_Interface& GetRunningCore() {
-    return System::GetInstance().GetRunningCore();
+    return System::GetInstance().Kernel().GetRunningCore();
 }
 
 [[nodiscard]] inline ARM_Interface& GetCore(u32 core_id) {

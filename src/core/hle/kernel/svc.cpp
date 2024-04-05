@@ -1240,7 +1240,7 @@ Result SVC::CreateThread(Handle* out_handle, u32 entry_point, u32 arg, VAddr sta
 
 /// Called when a thread exits
 void SVC::ExitThread() {
-    LOG_TRACE(Kernel_SVC, "called, pc=0x{:08X}", system.GetRunningCore().GetPC());
+    LOG_TRACE(Kernel_SVC, "called, pc=0x{:08X}", kernel.GetRunningCore().GetPC());
 
     kernel.GetCurrentThreadManager().ExitCurrentThread();
     system.PrepareReschedule();
@@ -1293,7 +1293,7 @@ Result SVC::CreateMutex(Handle* out_handle, u32 initial_locked) {
 
     // Create mutex.
     const auto mutex = kernel.CreateMutex(initial_locked != 0);
-    mutex->name = fmt::format("mutex-{:08x}", system.GetRunningCore().GetReg(14));
+    mutex->name = fmt::format("mutex-{:08x}", kernel.GetRunningCore().GetReg(14));
     mutex->resource_limit = resource_limit;
     return current_process->handle_table.Create(out_handle, std::move(mutex));
 }
@@ -1360,7 +1360,7 @@ Result SVC::CreateSemaphore(Handle* out_handle, s32 initial_count, s32 max_count
     // Create semaphore
     CASCADE_RESULT(std::shared_ptr<Semaphore> semaphore,
                    kernel.CreateSemaphore(initial_count, max_count));
-    semaphore->name = fmt::format("semaphore-{:08x}", system.GetRunningCore().GetReg(14));
+    semaphore->name = fmt::format("semaphore-{:08x}", kernel.GetRunningCore().GetReg(14));
     semaphore->resource_limit = resource_limit;
     return current_process->handle_table.Create(out_handle, std::move(semaphore));
 }
@@ -1444,7 +1444,7 @@ Result SVC::CreateEvent(Handle* out_handle, u32 reset_type) {
     }
 
     // Create event.
-    const auto name = fmt::format("event-{:08x}", system.GetRunningCore().GetReg(14));
+    const auto name = fmt::format("event-{:08x}", kernel.GetRunningCore().GetReg(14));
     const auto event = kernel.CreateEvent(static_cast<ResetType>(reset_type), name);
     event->resource_limit = resource_limit;
     return current_process->handle_table.Create(out_handle, std::move(event));
@@ -1488,7 +1488,7 @@ Result SVC::CreateTimer(Handle* out_handle, u32 reset_type) {
     }
 
     // Create timer.
-    const auto name = fmt::format("timer-{:08x}", system.GetRunningCore().GetReg(14));
+    const auto name = fmt::format("timer-{:08x}", kernel.GetRunningCore().GetReg(14));
     const auto timer = kernel.CreateTimer(static_cast<ResetType>(reset_type), name);
     timer->resource_limit = resource_limit;
     return current_process->handle_table.Create(out_handle, std::move(timer));
@@ -1554,10 +1554,10 @@ void SVC::SleepThread(s64 nanoseconds) {
 /// This returns the total CPU ticks elapsed since the CPU was powered-on
 s64 SVC::GetSystemTick() {
     // TODO: Use globalTicks here?
-    s64 result = system.GetRunningCore().GetTimer().GetTicks();
+    s64 result = kernel.GetRunningCore().GetTimer().GetTicks();
     // Advance time to defeat dumb games (like Cubic Ninja) that busy-wait for the frame to end.
     // Measured time between two calls on a 9.2 o3DS with Ninjhax 1.1b
-    system.GetRunningCore().GetTimer().AddTicks(150);
+    kernel.GetRunningCore().GetTimer().AddTicks(150);
     return result;
 }
 
@@ -1938,12 +1938,12 @@ Result SVC::GetProcessList(s32* process_count, VAddr out_process_array,
 }
 
 Result SVC::InvalidateInstructionCacheRange(u32 addr, u32 size) {
-    system.GetRunningCore().InvalidateCacheRange(addr, size);
+    kernel.GetRunningCore().InvalidateCacheRange(addr, size);
     return ResultSuccess;
 }
 
 Result SVC::InvalidateEntireInstructionCache() {
-    system.GetRunningCore().ClearInstructionCache();
+    kernel.GetRunningCore().ClearInstructionCache();
     return ResultSuccess;
 }
 
@@ -2291,11 +2291,11 @@ void SVC::CallSVC(u32 immediate) {
 SVC::SVC(Core::System& system) : system(system), kernel(system.Kernel()), memory(system.Memory()) {}
 
 u32 SVC::GetReg(std::size_t n) {
-    return system.GetRunningCore().GetReg(static_cast<int>(n));
+    return kernel.GetRunningCore().GetReg(static_cast<int>(n));
 }
 
 void SVC::SetReg(std::size_t n, u32 value) {
-    system.GetRunningCore().SetReg(static_cast<int>(n), value);
+    kernel.GetRunningCore().SetReg(static_cast<int>(n), value);
 }
 
 SVCContext::SVCContext(Core::System& system) : impl(std::make_unique<SVC>(system)) {}

@@ -89,8 +89,7 @@ System::ResultStatus System::RunLoopMultiCores() {
     for (auto& cpu_core : cpu_cores) {
         s64 delay = timing->GetGlobalTicks() - cpu_core->GetTimer().GetTicks();
         if (delay > 0) {
-            running_core = cpu_core.get();
-            kernel->SetRunningCPU(running_core);
+            kernel->SetRunningCPU(cpu_core.get());
             cpu_core->GetTimer().Advance();
             cpu_core->PrepareReschedule();
             kernel->GetThreadManager(cpu_core->GetID()).Reschedule();
@@ -107,7 +106,7 @@ System::ResultStatus System::RunLoopMultiCores() {
     // performance. Thus we don't sync delays below min_delay
     static constexpr s64 min_delay = 100;
     if (max_delay > min_delay) {
-        if (running_core != current_core_to_execute) {
+        if (cpu_cores[0].get() != current_core_to_execute) {
             kernel->SetRunningCPU(current_core_to_execute);
         }
         if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
@@ -132,8 +131,7 @@ System::ResultStatus System::RunLoopMultiCores() {
         for (auto& cpu_core : cpu_cores) {
             cpu_core->GetTimer().SetNextSlice(max_slice);
             auto start_ticks = cpu_core->GetTimer().GetTicks();
-            running_core = cpu_core.get();
-            kernel->SetRunningCPU(running_core);
+            kernel->SetRunningCPU(cpu_core.get());
             // If we don't have a currently active thread then don't execute instructions,
             // instead advance to the next event and try to yield to the next thread
             if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
@@ -607,7 +605,7 @@ System::ResultStatus System::Load(Frontend::EmuWindow& emu_window, const std::st
 }
 
 void System::PrepareReschedule() {
-    running_core->PrepareReschedule();
+    cpu_cores[0].get()->PrepareReschedule();
     reschedule_pending = true;
 }
 
@@ -673,7 +671,6 @@ System::ResultStatus System::Init(Frontend::EmuWindow& emu_window,
                 std::make_shared<ARM_DynCom>(*this, *memory, USER32MODE, i, timing->GetTimer(i)));
         }
     }
-    running_core = cpu_cores[0].get();
 
     kernel->SetCPUs(cpu_cores);
     kernel->SetRunningCPU(cpu_cores[0].get());
@@ -872,7 +869,6 @@ void System::Shutdown(bool is_deserializing) {
         video_dumper->StopDumping();
     }
 
-    running_core = nullptr;
     reschedule_pending = false;
 
     if (auto room_member = Network::GetRoomMember().lock()) {
