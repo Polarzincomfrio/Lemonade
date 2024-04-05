@@ -43,12 +43,6 @@ public class LemontweaksDialog extends BaseSheetDialog {
         recyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
     }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        adapter.saveSettings();
-    }
-
     private static class SettingsItem {
         private final int settingId;
         private final String name;
