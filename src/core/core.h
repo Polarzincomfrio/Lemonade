@@ -119,7 +119,7 @@ public:
      */
     [[nodiscard]] ResultStatus RunLoop();
     [[nodiscard]] ResultStatus RunLoopMultiCores();
-    [[nodiscard]] ResultStatus RunLoopOneCore();
+    [[nodiscard]] ResultStatus RunLoopSingleCore();
 
     /**
      * Step the CPU one instruction

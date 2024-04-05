@@ -77,7 +77,7 @@ System::System() : movie{*this}, cheat_engine{*this} {}
 System::~System() = default;
 
 System::ResultStatus System::RunLoop() {
-    return cpu_cores.size() > 1 ? RunLoopMultiCores() : RunLoopOneCore();
+    return Settings::values.is_new_3ds ? RunLoopMultiCores() : RunLoopSingleCore();
 }
 
 System::ResultStatus System::RunLoopMultiCores() {
@@ -108,8 +108,7 @@ System::ResultStatus System::RunLoopMultiCores() {
     static constexpr s64 min_delay = 100;
     if (max_delay > min_delay) {
         if (running_core != current_core_to_execute) {
-            running_core = current_core_to_execute;
-            kernel->SetRunningCPU(running_core);
+            kernel->SetRunningCPU(current_core_to_execute);
         }
         if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
             LOG_TRACE(Core_ARM11, "Core {} idling", current_core_to_execute->GetID());
@@ -124,8 +123,7 @@ System::ResultStatus System::RunLoopMultiCores() {
         // TODO: Make special check for idle since we can easily revert the time of idle cores
         s64 max_slice = Timing::MAX_SLICE_LENGTH;
         for (const auto& cpu_core : cpu_cores) {
-            running_core = cpu_core.get();
-            kernel->SetRunningCPU(running_core);
+            kernel->SetRunningCPU(cpu_core.get());
             cpu_core->GetTimer().Advance();
             cpu_core->PrepareReschedule();
             kernel->GetThreadManager(cpu_core->GetID()).Reschedule();
@@ -202,16 +200,16 @@ System::ResultStatus System::RunLoopMultiCores() {
     return status;
 }
 
-System::ResultStatus System::RunLoopOneCore() {
+System::ResultStatus System::RunLoopSingleCore() {
     // If we don't have a currently active thread then don't execute instructions,
     // instead advance to the next event and try to yield to the next thread
     if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
-        running_core->GetTimer().Idle();
-        running_core->GetTimer().Advance();
+        cpu_cores[0]->GetTimer().Idle();
+        cpu_cores[0]->GetTimer().Advance();
         PrepareReschedule();
     } else {
-        running_core->GetTimer().Advance();
-        running_core->Run();
+        cpu_cores[0]->GetTimer().Advance();
+        cpu_cores[0]->Run();
     }
     
     Reschedule();
