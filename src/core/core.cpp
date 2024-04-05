@@ -604,11 +604,6 @@ System::ResultStatus System::Load(Frontend::EmuWindow& emu_window, const std::st
     return status;
 }
 
-void System::PrepareReschedule() {
-    cpu_cores[0].get()->PrepareReschedule();
-    reschedule_pending = true;
-}
-
 PerfStats::Results System::GetAndResetPerfStats() {
     return (perf_stats && timing) ? perf_stats->GetAndResetStats(timing->GetGlobalTimeUs())
                                   : PerfStats::Results{};
@@ -616,18 +611,6 @@ PerfStats::Results System::GetAndResetPerfStats() {
 
 PerfStats::Results System::GetLastPerfStats() {
     return perf_stats ? perf_stats->GetLastStats() : PerfStats::Results{};
-}
-
-void System::Reschedule() {
-    if (!reschedule_pending) {
-        return;
-    }
-
-    reschedule_pending = false;
-    for (const auto& core : cpu_cores) {
-        LOG_TRACE(Core_ARM11, "Reschedule core {}", core->GetID());
-        kernel->GetThreadManager(core->GetID()).Reschedule();
-    }
 }
 
 System::ResultStatus System::Init(Frontend::EmuWindow& emu_window,
@@ -868,8 +851,6 @@ void System::Shutdown(bool is_deserializing) {
     if (video_dumper && video_dumper->IsDumping()) {
         video_dumper->StopDumping();
     }
-
-    reschedule_pending = false;
 
     if (auto room_member = Network::GetRoomMember().lock()) {
         Network::GameInfo game_info{};

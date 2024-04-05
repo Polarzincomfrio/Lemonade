@@ -618,7 +618,7 @@ Result SVC::SendSyncRequest(Handle handle) {
 
     LOG_TRACE(Kernel_SVC, "called handle=0x{:08X}({})", handle, session->GetName());
 
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
 
     auto thread = SharedFrom(kernel.GetCurrentThreadManager().GetCurrentThread());
 
@@ -760,7 +760,7 @@ Result SVC::WaitSynchronization1(Handle handle, s64 nano_seconds) {
 
         thread->wakeup_callback = std::make_shared<SVC_SyncCallback>(false);
 
-        system.PrepareReschedule();
+        kernel.PrepareReschedule();
 
         // Note: The output of this SVC will be set to ResultSuccess if the thread
         // resumes due to a signal in its wait objects.
@@ -830,7 +830,7 @@ Result SVC::WaitSynchronizationN(s32* out, VAddr handles_address, s32 handle_cou
 
         thread->wakeup_callback = std::make_shared<SVC_SyncCallback>(false);
 
-        system.PrepareReschedule();
+        kernel.PrepareReschedule();
 
         // This value gets set to -1 by default in this case, it is not modified after this.
         *out = -1;
@@ -876,7 +876,7 @@ Result SVC::WaitSynchronizationN(s32* out, VAddr handles_address, s32 handle_cou
 
         thread->wakeup_callback = std::make_shared<SVC_SyncCallback>(true);
 
-        system.PrepareReschedule();
+        kernel.PrepareReschedule();
 
         // Note: The output of this SVC will be set to ResultSuccess if the thread resumes due to a
         // signal in one of its wait objects.
@@ -1010,7 +1010,7 @@ Result SVC::ReplyAndReceive(s32* index, VAddr handles_address, s32 handle_count,
 
     thread->wakeup_callback = std::make_shared<SVC_IPCCallback>(system);
 
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
 
     // Note: The output of this SVC will be set to ResultSuccess if the thread resumes due to a
     // signal in one of its wait objects, or to 0xC8A01836 if there was a translation error.
@@ -1049,7 +1049,7 @@ Result SVC::ArbitrateAddress(Handle handle, u32 address, u32 type, u32 value, s6
                                   static_cast<ArbitrationType>(type), address, value, nanoseconds);
 
     // TODO(Subv): Identify in which specific cases this call should cause a reschedule.
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
     return res;
 }
 
@@ -1228,7 +1228,7 @@ Result SVC::CreateThread(Handle* out_handle, u32 entry_point, u32 arg, VAddr sta
     thread->context.fpscr =
         FPSCR_DEFAULT_NAN | FPSCR_FLUSH_TO_ZERO | FPSCR_ROUND_TOZERO; // 0x03C00000
 
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
 
     LOG_TRACE(Kernel_SVC,
               "called entrypoint=0x{:08X} ({}), arg=0x{:08X}, stacktop=0x{:08X}, "
@@ -1243,7 +1243,7 @@ void SVC::ExitThread() {
     LOG_TRACE(Kernel_SVC, "called, pc=0x{:08X}", kernel.GetRunningCore().GetPC());
 
     kernel.GetCurrentThreadManager().ExitCurrentThread();
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
 }
 
 /// Gets the priority for the specified thread
@@ -1277,7 +1277,7 @@ Result SVC::SetThreadPriority(Handle handle, u32 priority) {
         mutex->UpdatePriority();
     }
 
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
     return ResultSuccess;
 }
 
@@ -1548,7 +1548,7 @@ void SVC::SleepThread(s64 nanoseconds) {
     // Create an event to wake the thread up after the specified nanosecond delay has passed
     thread_manager.GetCurrentThread()->WakeAfterDelay(nanoseconds);
 
-    system.PrepareReschedule();
+    kernel.PrepareReschedule();
 }
 
 /// This returns the total CPU ticks elapsed since the CPU was powered-on
