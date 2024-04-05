@@ -138,13 +138,20 @@ vk::RenderPass RenderpassCache::GetRenderpass(VideoCore::PixelFormat color,
     ASSERT_MSG(color_index <= MAX_COLOR_FORMATS && depth_index <= MAX_DEPTH_FORMATS,
                "Invalid color index {} and/or depth_index {}", color_index, depth_index);
 
-    vk::UniqueRenderPass& renderpass = cached_renderpasses[color_index][depth_index][is_clear];
+    ASSERT_MSG(sample_count && std::has_single_bit(sample_count) && sample_count <= MAX_SAMPLES,
+               "Invalid sample count {}", static_cast<u32>(sample_count));
+
+    const u32 samples_index = static_cast<u32>(std::bit_width(sample_count) - 1);
+
+    vk::UniqueRenderPass& renderpass =
+        cached_renderpasses[color_index][depth_index][samples_index][is_clear];
     if (!renderpass) {
         const vk::Format color_format = instance.GetTraits(color).native;
         const vk::Format depth_format = instance.GetTraits(depth).native;
         const vk::AttachmentLoadOp load_op =
             is_clear ? vk::AttachmentLoadOp::eClear : vk::AttachmentLoadOp::eLoad;
-        renderpass = CreateRenderPass(color_format, depth_format, load_op);
+        renderpass = CreateRenderPass(color_format, depth_format, load_op,
+                                      static_cast<vk::SampleCountFlagBits>(sample_count));
     }
 
     return *renderpass;
