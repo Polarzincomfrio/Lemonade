@@ -113,7 +113,7 @@ System::ResultStatus System::RunLoopMultiCores() {
         if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
             LOG_TRACE(Core_ARM11, "Core {} idling", current_core_to_execute->GetID());
             current_core_to_execute->GetTimer().Idle();
-            PrepareReschedule();
+            kernel->PrepareReschedule();
         } else {
             current_core_to_execute->Run();
         }
@@ -139,7 +139,7 @@ System::ResultStatus System::RunLoopMultiCores() {
             if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
                 LOG_TRACE(Core_ARM11, "Core {} idling", cpu_core->GetID());
                 cpu_core->GetTimer().Idle();
-                PrepareReschedule();
+                kernel->PrepareReschedule();
             } else {
                 cpu_core->Run();
             }
@@ -147,7 +147,7 @@ System::ResultStatus System::RunLoopMultiCores() {
         }
     }
 
-    Reschedule();
+    kernel->RescheduleMultiCores();
 
     Signal signal{Signal::None};
     u32 param{};
@@ -206,13 +206,13 @@ System::ResultStatus System::RunLoopSingleCore() {
     if (kernel->GetCurrentThreadManager().GetCurrentThread() == nullptr) {
         cpu_cores[0]->GetTimer().Idle();
         cpu_cores[0]->GetTimer().Advance();
-        PrepareReschedule();
+        kernel->PrepareReschedule();
     } else {
         cpu_cores[0]->GetTimer().Advance();
         cpu_cores[0]->Run();
     }
     
-    Reschedule();
+    kernel->RescheduleSingleCore();
 
     Signal signal{Signal::None};
     u32 param{};
