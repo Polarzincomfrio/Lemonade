@@ -273,6 +273,7 @@ bool RasterizerCache<T>::AccelerateDisplayTransfer(const Pica::DisplayTransferCo
     src_params.height = config.output_height;
     src_params.is_tiled = !config.input_linear;
     src_params.pixel_format = PixelFormatFromGPUPixelFormat(config.input_format);
+    src_params.sample_count = sample_count;
     src_params.UpdateParams();
 
     SurfaceParams dst_params;
@@ -283,6 +284,7 @@ bool RasterizerCache<T>::AccelerateDisplayTransfer(const Pica::DisplayTransferCo
                                                          : config.output_height.Value();
     dst_params.is_tiled = config.input_linear != config.dont_swizzle;
     dst_params.pixel_format = PixelFormatFromGPUPixelFormat(config.output_format);
+    dst_params.sample_count = sample_count;
     dst_params.UpdateParams();
 
     // hack for Tales of the Abyss / Pac Man Party 3D
@@ -577,6 +579,7 @@ SurfaceId RasterizerCache<T>::GetTextureSurface(const Pica::Texture::TextureInfo
     params.is_tiled = true;
     params.pixel_format = PixelFormatFromTextureFormat(info.format);
     params.res_scale = filter != Settings::TextureFilter::None ? resolution_scale_factor : 1;
+    params.sample_count = max_level == 0 ? sample_count : 1;
     params.UpdateParams();
 
     const u32 min_width = info.width >> max_level;
@@ -704,6 +707,7 @@ FramebufferHelper<T> RasterizerCache<T>::GetFramebufferSurfaces(bool using_color
     SurfaceParams color_params;
     color_params.is_tiled = true;
     color_params.res_scale = resolution_scale_factor;
+    color_params.sample_count = sample_count;
     color_params.width = config.GetWidth();
     color_params.height = config.GetHeight();
     SurfaceParams depth_params = color_params;
