@@ -27,9 +27,7 @@ namespace Kernel {
 KernelSystem::KernelSystem(Memory::MemorySystem& memory, Core::Timing& timing,
                            MemoryMode memory_mode, const New3dsHwCapabilities& n3ds_hw_caps,
                            u64 override_init_time)
-    : memory(memory), timing(timing),
-      prepare_reschedule_callback(std::move(prepare_reschedule_callback)), memory_mode(memory_mode),
-      n3ds_hw_caps(n3ds_hw_caps) {
+    : memory(memory), timing(timing), n3ds_hw_caps(n3ds_hw_caps) {
     std::generate(memory_regions.begin(), memory_regions.end(),
                   [] { return std::make_shared<MemoryRegionInfo>(); });
     MemoryInit(memory_mode, n3ds_hw_caps.memory_mode, override_init_time);

@@ -132,8 +132,7 @@ private:
 class KernelSystem {
 public:
     explicit KernelSystem(Memory::MemorySystem& memory, Core::Timing& timing,
-                          std::function<void()> prepare_reschedule_callback, MemoryMode memory_mode,
-                          u32 num_cores, const New3dsHwCapabilities& n3ds_hw_caps,
+                          MemoryMode memory_mode, const New3dsHwCapabilities& n3ds_hw_caps,
                           u64 override_init_time = 0);
     ~KernelSystem();
 
