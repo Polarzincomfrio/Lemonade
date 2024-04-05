@@ -192,7 +192,7 @@ class EmulationActivity : AppCompatActivity() {
     }
 
     fun displayLemontweaks() {
-        val dialog = LemontweaksDialog(requireActivity())
+        val dialog = LemontweaksDialog(this)
             dialog.show()
     }
 
