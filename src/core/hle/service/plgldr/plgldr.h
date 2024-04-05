@@ -117,8 +117,6 @@ public:
     }
 
 private:
-    Core::System& system;
-
     PluginLoaderContext plgldr_context;
 
     void IsEnabled(Kernel::HLERequestContext& ctx);
