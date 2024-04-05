@@ -3,6 +3,7 @@
 // Refer to the license.txt file included.
 
 #include <limits>
+#include <boost/container/static_vector.hpp>
 #include "common/assert.h"
 #include "video_core/rasterizer_cache/pixel_format.h"
 #include "video_core/renderer_vulkan/vk_instance.h"
@@ -38,7 +39,7 @@ void RenderpassCache::BeginRendering(const Framebuffer* framebuffer,
         .framebuffer = framebuffer->Handle(),
         .render_pass = framebuffer->RenderPass(),
         .render_area = render_area,
-        .clear = {},
+        .clears = {},
         .do_clear = false,
     };
     images = framebuffer->Images();
@@ -58,8 +59,8 @@ void RenderpassCache::BeginRendering(const RenderPass& new_pass) {
             .renderPass = info.render_pass,
             .framebuffer = info.framebuffer,
             .renderArea = info.render_area,
-            .clearValueCount = info.do_clear ? 1u : 0u,
-            .pClearValues = &info.clear,
+            .clearValueCount = info.do_clear ? 2u : 0u,
+            .pClearValues = info.clears.data(),
         };
         cmdbuf.beginRenderPass(renderpass_begin_info, vk::SubpassContents::eInline);
     });
@@ -124,7 +125,8 @@ void RenderpassCache::EndRendering() {
 }
 
 vk::RenderPass RenderpassCache::GetRenderpass(VideoCore::PixelFormat color,
-                                              VideoCore::PixelFormat depth, bool is_clear) {
+                                              VideoCore::PixelFormat depth, bool is_clear,
+                                              u8 sample_count) {
     std::scoped_lock lock{cache_mutex};
 
     const u32 color_index =
