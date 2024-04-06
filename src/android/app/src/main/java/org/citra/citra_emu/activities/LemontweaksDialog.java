@@ -182,7 +182,7 @@ public class LemontweaksDialog extends BaseSheetDialog {
                 }
             }
             if (isChanged) {
-                NativeLibrary.setLemontweaks(newSettings);
+                (new NativeLibrary()).setLemontweaks(newSettings);
             }
         }
     }
