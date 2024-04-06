@@ -365,7 +365,7 @@ private:
     std::unique_ptr<Loader::AppLoader> app_loader;
 
     /// ARM11 CPU core
-    std::vector<std::shared_ptr<ARM_Interface>> cpu_cores;
+    std::array<std::shared_ptr<ARM_Interface>, 4> cpu_cores;
 
     /// DSP core
     std::unique_ptr<AudioCore::DspInterface> dsp_core;

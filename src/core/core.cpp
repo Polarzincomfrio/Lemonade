@@ -634,30 +634,30 @@ System::ResultStatus System::Init(Frontend::EmuWindow& emu_window,
         movie.GetOverrideInitTime());
 
     exclusive_monitor = MakeExclusiveMonitor(*memory, num_cores);
-    cpu_cores.reserve(num_cores);
     if (Settings::values.use_cpu_jit) {
 #if CITRA_ARCH(x86_64) || CITRA_ARCH(arm64)
         for (u32 i = 0; i < num_cores; ++i) {
-            cpu_cores.push_back(std::make_shared<ARM_Dynarmic>(
-                *this, *memory, i, timing->GetTimer(i), *exclusive_monitor));
+            cpu_cores[i] = std::make_shared<ARM_Dynarmic>(
+                *this, i, timing->GetTimer(i), *exclusive_monitor);
+            kernel->GetThreadManager(i).SetCPU(cpu_cores[i].get());
         }
 #else
         for (u32 i = 0; i < num_cores; ++i) {
-            cpu_cores.push_back(
-                std::make_shared<ARM_DynCom>(this, *memory, USER32MODE, i, timing->GetTimer(i)));
+            cpu_cores[i] = 
+                std::make_shared<ARM_DynCom>(this, i, timing->GetTimer(i));
+            kernel->GetThreadManager(i).SetCPU(cpu_cores[i].get());
         }
         LOG_WARNING(Core, "CPU JIT requested, but Dynarmic not available");
 #endif
     } else {
         for (u32 i = 0; i < num_cores; ++i) {
-            cpu_cores.push_back(
-                std::make_shared<ARM_DynCom>(*this, *memory, USER32MODE, i, timing->GetTimer(i)));
+            cpu_cores[i] = 
+                std::make_shared<ARM_DynCom>(*this, i, timing->GetTimer(i));
+            kernel->GetThreadManager(i).SetCPU(cpu_cores[i].get());
         }
     }
 
-    kernel->SetCPUs(cpu_cores);
     kernel->SetRunningCPU(cpu_cores[0].get());
-
     if (Settings::values.core_downcount_hack) {
         SetCpuUsageLimit(true, num_cores);
     }
@@ -844,7 +844,7 @@ void System::Shutdown(bool is_deserializing) {
     service_manager.reset();
     dsp_core.reset();
     kernel.reset();
-    cpu_cores.clear();
+    cpu_cores = {};
     exclusive_monitor.reset();
     timing.reset();
 
