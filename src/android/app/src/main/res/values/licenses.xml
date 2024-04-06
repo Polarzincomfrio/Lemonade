@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="license_mit" translatable="false">
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -95,7 +95,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     <string name="license_oboe_description" translatable="false">Oboe is a C++ library which makes it easy to build high-performance audio apps on Android</string>
     <string name="license_oboe_link" translatable="false">https://github.com/google/oboe/</string>
     <string name="license_oboe_copyright" translatable="false">Copyright©️ Google</string>
-    <string name="license_oboe_text" translatable="false">
+    <string name="license_oboe_text" tools:ignore="TypographyOther" translatable="false">
     \n
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n
 \n
