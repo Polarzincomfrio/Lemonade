@@ -96,6 +96,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
     <string name="license_oboe_link" translatable="false">https://github.com/google/oboe/</string>
     <string name="license_oboe_copyright" translatable="false">Copyright©️ Google</string>
     <string name="license_oboe_text" translatable="false">
+    <![CDATA[
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
    1. Definitions.
@@ -293,6 +294,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+    ]]>
     </string>
     <string name="license_cubeb" translatable="false">cubeb</string>
     <string name="license_cubeb_description" translatable="false">Cross platform audio library</string>
