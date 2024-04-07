@@ -21,6 +21,7 @@ import org.citra.citra_emu.R;
 
 import java.util.ArrayList;
 
+@SuppressWarnings({"all", "java:S4723", "java:S1874"})
 public class LemontweaksDialog extends BaseSheetDialog {
 
     private SettingsAdapter adapter;
@@ -182,7 +183,7 @@ public class LemontweaksDialog extends BaseSheetDialog {
                 }
             }
             if (isChanged) {
-                (new NativeLibrary()).setLemontweaks(newSettings);
+                 NativeLibrary.setLemontweaks(newSettings);
             }
         }
     }
