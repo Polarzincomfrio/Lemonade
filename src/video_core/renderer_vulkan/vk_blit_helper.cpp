@@ -11,7 +11,7 @@
 #include "video_core/renderer_vulkan/vk_texture_runtime.h"
 
 #include "video_core/host_shaders/format_reinterpreter/vulkan_d24s8_to_rgba8_comp.h"
-#include "video_core/host_shaders/format_reinterpreter/vulkan_d24s8_to_rgba8_ms_comp_spv.h"
+#include "video_core/host_shaders/format_reinterpreter/vulkan_d24s8_to_rgba8_ms_comp.h"
 #include "video_core/host_shaders/full_screen_triangle_vert.h"
 #include "video_core/host_shaders/vulkan_blit_depth_stencil_frag.h"
 #include "video_core/host_shaders/vulkan_depth_to_buffer_comp.h"
