@@ -194,7 +194,7 @@ BlitHelper::BlitHelper(const Instance& instance_, Scheduler& scheduler_, Descrip
                                vk::ShaderStageFlagBits::eVertex, device)},
       d24s8_to_rgba8_comp{Compile(HostShaders::VULKAN_D24S8_TO_RGBA8_COMP,
                                   vk::ShaderStageFlagBits::eCompute, device)},
-      d24s8_to_rgba8_ms_comp{CompileSPV(HostShaders::VULKAN_D24S8_TO_RGBA8_MS_COMP,
+      d24s8_to_rgba8_ms_comp{Compile(HostShaders::VULKAN_D24S8_TO_RGBA8_MS_COMP,
                                    vk::ShaderStageFlagBits::eCompute, device)},
       depth_to_buffer_comp{Compile(HostShaders::VULKAN_DEPTH_TO_BUFFER_COMP,
                                     vk::ShaderStageFlagBits::eCompute, device)},
