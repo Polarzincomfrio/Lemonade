@@ -11,6 +11,7 @@
 #include "video_core/renderer_vulkan/vk_texture_runtime.h"
 
 #include "video_core/host_shaders/format_reinterpreter/vulkan_d24s8_to_rgba8_comp.h"
+#include "video_core/host_shaders/format_reinterpreter/vulkan_d24s8_to_rgba8_ms_comp_spv.h"
 #include "video_core/host_shaders/full_screen_triangle_vert.h"
 #include "video_core/host_shaders/vulkan_blit_depth_stencil_frag.h"
 #include "video_core/host_shaders/vulkan_depth_to_buffer_comp.h"
@@ -193,11 +194,14 @@ BlitHelper::BlitHelper(const Instance& instance_, Scheduler& scheduler_, Descrip
                                vk::ShaderStageFlagBits::eVertex, device)},
       d24s8_to_rgba8_comp{Compile(HostShaders::VULKAN_D24S8_TO_RGBA8_COMP,
                                   vk::ShaderStageFlagBits::eCompute, device)},
+      d24s8_to_rgba8_ms_comp{CompileSPV(VULKAN_D24S8_TO_RGBA8_COMP_SPV, device)},
       depth_to_buffer_comp{Compile(HostShaders::VULKAN_DEPTH_TO_BUFFER_COMP,
                                    vk::ShaderStageFlagBits::eCompute, device)},
       blit_depth_stencil_frag{Compile(HostShaders::VULKAN_BLIT_DEPTH_STENCIL_FRAG,
                                       vk::ShaderStageFlagBits::eFragment, device)},
       d24s8_to_rgba8_pipeline{MakeComputePipeline(d24s8_to_rgba8_comp, compute_pipeline_layout)},
+      d24s8_to_rgba8_ms_pipeline{
+          MakeComputePipeline(d24s8_to_rgba8_ms_comp, compute_pipeline_layout)},
       depth_to_buffer_pipeline{
           MakeComputePipeline(depth_to_buffer_comp, compute_buffer_pipeline_layout)},
       depth_blit_pipeline{MakeDepthStencilBlitPipeline()},
@@ -230,6 +234,7 @@ BlitHelper::~BlitHelper() {
     device.destroyPipelineLayout(two_textures_pipeline_layout);
     device.destroyShaderModule(full_screen_vert);
     device.destroyShaderModule(d24s8_to_rgba8_comp);
+    device.destroyPipeline(d24s8_to_rgba8_ms_pipeline);
     device.destroyShaderModule(depth_to_buffer_comp);
     device.destroyShaderModule(blit_depth_stencil_frag);
     device.destroyPipeline(depth_to_buffer_pipeline);
@@ -336,10 +341,18 @@ bool BlitHelper::ConvertDS24S8ToRGBA8(Surface& source, Surface& dest,
         .imageLayout = vk::ImageLayout::eGeneral,
     };
 
+    if (dest.sample_count != source.sample_count) {
+        LOG_ERROR(Render_Vulkan, "Trying to bit DS24S8->RGBA8 with different sample counts");
+        return false;
+    }
+
+    const bool multisample = (source.sample_count > 1) && (dest.sample_count > 1);
+
     const auto descriptor_set = compute_provider.Acquire(textures);
+    const auto pipeline = multisample ? d24s8_to_rgba8_ms_pipeline : d24s8_to_rgba8_pipeline;
 
     renderpass_cache.EndRendering();
-    scheduler.Record([this, descriptor_set, copy, src_image = source.Image(),
+    scheduler.Record([this, pipeline, descriptor_set, copy, src_image = source.Image(),
                       dst_image = dest.Image()](vk::CommandBuffer cmdbuf) {
         const std::array pre_barriers = {
             vk::ImageMemoryBarrier{
@@ -418,7 +431,7 @@ bool BlitHelper::ConvertDS24S8ToRGBA8(Surface& source, Surface& dest,
 
         cmdbuf.bindDescriptorSets(vk::PipelineBindPoint::eCompute, compute_pipeline_layout, 0,
                                   descriptor_set, {});
-        cmdbuf.bindPipeline(vk::PipelineBindPoint::eCompute, d24s8_to_rgba8_pipeline);
+        cmdbuf.bindPipeline(vk::PipelineBindPoint::eCompute, pipeline);
 
         const ComputeInfo info = {
             .src_offset = Common::Vec2i{static_cast<int>(copy.src_offset.x),
