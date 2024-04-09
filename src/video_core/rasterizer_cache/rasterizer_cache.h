@@ -211,7 +211,7 @@ bool RasterizerCache<T>::AccelerateTextureCopy(const Pica::DisplayTransferConfig
 
     const auto [src_surface_id, src_rect] = GetTexCopySurface(src_params);
     if (!src_surface_id) {
-        return Settings::values.skip_texture_copy;
+        return false;
     }
 
     const SurfaceParams src_info = slot_surfaces[src_surface_id];
@@ -286,27 +286,6 @@ bool RasterizerCache<T>::AccelerateDisplayTransfer(const Pica::DisplayTransferCo
     dst_params.pixel_format = PixelFormatFromGPUPixelFormat(config.output_format);
     dst_params.sample_count = sample_count;
     dst_params.UpdateParams();
-
-    // hack for Tales of the Abyss / Pac Man Party 3D
-    if (Settings::values.display_transfer_hack) {
-        if (dst_params.height == 400) {
-            if (dst_params.addr == 0x183CE430) {
-                dst_params.addr -= 0xCE430;
-                dst_params.end -= 0xCE430;
-            } else if (dst_params.addr == 0x18387F30) {
-                dst_params.addr -= 0x41A30;
-                dst_params.end -= 0x41A30;
-            }
-        } else {
-            if (dst_params.addr == 0x180B4830) {
-                dst_params.addr -= 0x34830;
-                dst_params.end -= 0x34830;
-            } else if (dst_params.addr == 0x1807C430) {
-                dst_params.addr += 0x3BFD0;
-                dst_params.end += 0x3BFD0;
-            }
-        }
-    }
 
     // Using flip_vertically alongside crop_input_lines produces skewed output on hardware.
     // We have to emulate this because some games rely on this behaviour to render correctly.
@@ -452,8 +431,10 @@ void RasterizerCache<T>::CopySurface(Surface& src_surface, Surface& dst_surface,
 
     const u32 src_scale = src_surface.res_scale;
     const u32 dst_scale = dst_surface.res_scale;
-    if (src_scale > dst_scale) {
-        dst_surface.ScaleUp(src_scale);
+    const u32 src_sample_count = src_surface.sample_count;
+    const u32 dst_sample_count = dst_surface.sample_count;
+    if ((src_scale > dst_scale) || (src_sample_count > dst_sample_count)) {
+        dst_surface.ScaleUp(src_scale, src_sample_count);
     }
 
     const auto src_rect = src_surface.GetScaledSubRect(subrect_params);
@@ -1192,8 +1173,9 @@ bool RasterizerCache<T>::ValidateByReinterpretation(Surface& surface, SurfacePar
             return false;
         }
         const u32 res_scale = src_surface.res_scale;
-        if (res_scale > surface.res_scale) {
-            surface.ScaleUp(res_scale);
+        const u8 sample_count = src_surface.sample_count;
+        if ((res_scale > surface.res_scale) || (sample_count > surface.sample_count)) {
+            surface.ScaleUp(res_scale, sample_count);
         }
         const PAddr addr = boost::icl::lower(interval);
         const SurfaceParams copy_params = surface.FromInterval(copy_interval);
@@ -1370,8 +1352,8 @@ SurfaceId RasterizerCache<T>::CreateSurface(const SurfaceParams& params) {
         return surface_id;
     }();
     Surface& surface = slot_surfaces[surface_id];
-    if (params.res_scale > surface.res_scale) {
-        surface.ScaleUp(params.res_scale);
+    if ((params.res_scale > surface.res_scale) || (params.sample_count > surface.sample_count)) {
+        surface.ScaleUp(params.res_scale, params.sample_count);
     }
     surface.MarkInvalid(surface.GetInterval());
     return surface_id;
