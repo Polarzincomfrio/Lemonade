@@ -244,7 +244,7 @@ bool RasterizerCache<T>::AccelerateTextureCopy(const Pica::DisplayTransferConfig
 
     if (dst_surface.type == SurfaceType::Texture ||
         !CheckFormatsBlittable(src_surface.pixel_format, dst_surface.pixel_format)) {
-        return false;
+        return Settings::values.skip_texture_copy;
     }
 
     ASSERT(src_rect.GetWidth() == dst_rect.GetWidth());
@@ -286,6 +286,28 @@ bool RasterizerCache<T>::AccelerateDisplayTransfer(const Pica::DisplayTransferCo
     dst_params.pixel_format = PixelFormatFromGPUPixelFormat(config.output_format);
     dst_params.sample_count = sample_count;
     dst_params.UpdateParams();
+
+// hack for Tales of the Abyss / Pac Man Party 3D
+    if (Settings::values.display_transfer_hack) {
+        if (dst_params.height == 400) {
+            if (dst_params.addr == 0x183CE430) {
+                dst_params.addr -= 0xCE430;
+                dst_params.end -= 0xCE430;
+            } else if (dst_params.addr == 0x18387F30) {
+                dst_params.addr -= 0x41A30;
+                dst_params.end -= 0x41A30;
+            }
+        } else {
+            if (dst_params.addr == 0x180B4830) {
+                dst_params.addr -= 0x34830;
+                dst_params.end -= 0x34830;
+            } else if (dst_params.addr == 0x1807C430) {
+                dst_params.addr += 0x3BFD0;
+                dst_params.end += 0x3BFD0;
+            }
+        }
+    }
+    
 
     // Using flip_vertically alongside crop_input_lines produces skewed output on hardware.
     // We have to emulate this because some games rely on this behaviour to render correctly.
