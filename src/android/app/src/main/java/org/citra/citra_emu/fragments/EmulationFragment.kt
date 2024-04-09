@@ -232,7 +232,7 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
             game.title
         binding.inGameMenu.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.menu_emulation_pause -> {
+                R.id.menu_emulation_resume -> {
                     if (emulationState.isPaused) {
                         emulationState.unpause()
                         if (binding.drawerLayout.isOpen) {
