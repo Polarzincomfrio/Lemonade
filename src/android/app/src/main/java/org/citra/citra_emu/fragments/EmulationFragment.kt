@@ -149,6 +149,10 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
         screenAdjustmentUtil = ScreenAdjustmentUtil(emulationActivity.windowManager, settingsViewModel.settings)
         EmulationLifecycleUtil.addShutdownHook(hook = { emulationState.stop() })
         EmulationLifecycleUtil.addPauseResumeHook(hook = { togglePause() })
+
+        if (!emulationState.isPaused) {
+            emulationState.pause()
+        }
     }
 
     override fun onCreateView(
@@ -231,22 +235,10 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
                 R.id.menu_emulation_pause -> {
                     if (emulationState.isPaused) {
                         emulationState.unpause()
-                        it.title = resources.getString(R.string.pause_emulation)
-                        it.icon = ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.ic_pause,
-                            requireContext().theme
-                        )
-                    } else {
-                        emulationState.pause()
-                        it.title = resources.getString(R.string.resume_emulation)
-                        it.icon = ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.ic_play,
-                            requireContext().theme
-                        )
+                        if (binding.drawerLayout.isOpen) {
+                            binding.drawerLayout.close()
+                        }
                     }
-                    true
                 }
 
                 R.id.menu_emulation_savestates -> {
