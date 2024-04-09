@@ -239,6 +239,7 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
                             binding.drawerLayout.close()
                         }
                     }
+                   true
                 }
 
                 R.id.menu_emulation_savestates -> {
