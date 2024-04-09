@@ -234,7 +234,7 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
             when (it.itemId) {
                 R.id.menu_emulation_resume -> {
                     if (emulationState.isPaused) {
-                        NativeLibrary.unpauseEmulation()
+                        NativeLibrary.unPauseEmulation()
                         if (binding.drawerLayout.isOpen) {
                             binding.drawerLayout.close()
                         }
