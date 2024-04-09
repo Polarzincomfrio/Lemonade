@@ -195,7 +195,7 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
 
             override fun onDrawerOpened(drawerView: View) {
                 if (!emulationState.isPaused) {
-                    emulationState.pause()
+                    NativeLibrary.pauseEmulation()
                 }
                 binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
@@ -234,7 +234,7 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
             when (it.itemId) {
                 R.id.menu_emulation_resume -> {
                     if (emulationState.isPaused) {
-                        emulationState.unpause()
+                        NativeLibrary.unpauseEmulation()
                         if (binding.drawerLayout.isOpen) {
                             binding.drawerLayout.close()
                         }
