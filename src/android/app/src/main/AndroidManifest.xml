@@ -66,6 +66,7 @@
 
         <activity
             android:name="org.citra.citra_emu.activities.EmulationActivity"
+            android:supportsPictureInPicture="true"
             android:exported="true"
             android:theme="@style/Theme.Lemonade.Main"
             android:launchMode="singleTop">

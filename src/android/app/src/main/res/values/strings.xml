@@ -36,6 +36,8 @@
     <string name="select_citra_user_folder_home_description">Changes the files that Lemonade uses to load games</string>
     <string name="theme_and_color_description">Modify the look of the app</string>
     <string name="install_cia_title">Install CIA</string>
+    <string name="pip_support">Picture In Picture</string>
+    <string name="pip_support_desc">Minimize window when placed in the background</string>
 
     <!-- GPU driver installation -->
     <string name="select_gpu_driver">Select GPU driver</string>
@@ -83,7 +85,7 @@
     <string name="permission_denied">Permission denied</string>
     <string name="add_games_warning">Skip selecting games folder?</string>
     <string name="add_games_warning_description">Games won\'t be displayed in the Games list if a folder isn\'t selected.</string>
-    <string name="add_games_warning_help">https://Lemonade-emu.org/wiki/dumping-game-cartridges/</string>
+    <string name="add_games_warning_help">https://lemonade-emu.github.io/pages/dumping-game-cartridges/</string>
     <string name="warning_help">Help</string>
     <string name="warning_skip">Skip</string>
     <string name="warning_cancel">Cancel</string>
@@ -121,6 +123,7 @@
     <string name="button_select" translatable="false">SELECT</string>
     <string name="button_start" translatable="false">START</string>
     <string name="button_home">HOME</string>
+    <string name="button_swap_screens">Swap Screens</string>
     <string name="button_x" translatable="false">X</string>
     <string name="button_y" translatable="false">Y</string>
     <string name="button_l" translatable="false">L</string>
@@ -279,7 +282,7 @@
     <string name="learn_more">Learn More</string>
     <string name="close">Close</string>
     <string name="reset_to_default">Reset to Default</string>
-    <string name="redump_games"><![CDATA[Please follow the guides to redump your <a href="https://Lemonade-emu.org/wiki/dumping-game-cartridges/">game cartidges</a> or <a href="https://Lemonade-emu.org/wiki/dumping-installed-titles/">installed titles</a>.]]></string>
+    <string name="redump_games"><![CDATA[Please follow the guides to redump your <a href="https://lemonade-emu.github.io/pages/dumping-game-cartridges/">game cartidges</a> or <a href="https://lemonade-emu.github.io/pages/dumping-installed-titles/">installed titles</a>.]]></string>
     <string name="option_default">Default</string>
     <string name="none">None</string>
     <string name="auto">Auto</string>

@@ -512,7 +512,7 @@ struct Values {
 
     SwitchableSetting<bool> filter_mode{true, "filter_mode"};
     SwitchableSetting<std::string> pp_shader_name{"none (builtin)", "pp_shader_name"};
-    SwitchableSetting<std::string> anaglyph_shader_name{"dubois (builtin)", "anaglyph_shader_name"};
+    SwitchableSetting<std::string> anaglyph_shader_name{"rendepth (builtin)", "anaglyph_shader_name"};
 
     SwitchableSetting<bool> dump_textures{false, "dump_textures"};
     SwitchableSetting<bool> custom_textures{false, "custom_textures"};
@@ -549,9 +549,7 @@ struct Values {
     SwitchableSetting<bool> core_downcount_hack{false, "core_downcount_hack"};
     bool skip_slow_draw;
     bool skip_texture_copy;
-    bool display_transfer_hack;
     bool stream_buffer_hack;
-    bool y2r_event_delay;
     bool y2r_perform_hack;
     u32 core_ticks_hack;
 

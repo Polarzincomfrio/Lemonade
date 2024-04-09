@@ -287,6 +287,7 @@ bool RasterizerCache<T>::AccelerateDisplayTransfer(const Pica::DisplayTransferCo
     dst_params.sample_count = sample_count;
     dst_params.UpdateParams();
 
+
 // hack for Tales of the Abyss / Pac Man Party 3D
     if (Settings::values.display_transfer_hack) {
         if (dst_params.height == 400) {
@@ -308,6 +309,8 @@ bool RasterizerCache<T>::AccelerateDisplayTransfer(const Pica::DisplayTransferCo
         }
     }
     
+
+
 
     // Using flip_vertically alongside crop_input_lines produces skewed output on hardware.
     // We have to emulate this because some games rely on this behaviour to render correctly.
