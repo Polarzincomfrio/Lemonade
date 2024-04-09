@@ -211,7 +211,7 @@ bool RasterizerCache<T>::AccelerateTextureCopy(const Pica::DisplayTransferConfig
 
     const auto [src_surface_id, src_rect] = GetTexCopySurface(src_params);
     if (!src_surface_id) {
-        return false;
+        return Settings::values.skip_texture_copy;
     }
 
     const SurfaceParams src_info = slot_surfaces[src_surface_id];
@@ -244,7 +244,7 @@ bool RasterizerCache<T>::AccelerateTextureCopy(const Pica::DisplayTransferConfig
 
     if (dst_surface.type == SurfaceType::Texture ||
         !CheckFormatsBlittable(src_surface.pixel_format, dst_surface.pixel_format)) {
-        return Settings::values.skip_texture_copy;
+        return false;
     }
 
     ASSERT(src_rect.GetWidth() == dst_rect.GetWidth());
