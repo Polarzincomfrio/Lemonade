@@ -18,7 +18,7 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
     private lateinit var adapter: SettingsAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    protected fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_lemontweaks)
 
