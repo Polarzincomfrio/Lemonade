@@ -235,8 +235,8 @@ class EmulationFragment : Fragment(), SurfaceHolder.Callback, Choreographer.Fram
                         if (binding.drawerLayout.isOpen) {
                             binding.drawerLayout.close()
                         }
+                       true
                     }
-                   true
 
                 R.id.menu_emulation_savestates -> {
                     showSavestateMenu()
