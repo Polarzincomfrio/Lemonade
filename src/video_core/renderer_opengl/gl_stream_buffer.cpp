@@ -100,6 +100,7 @@ void OGLStreamBuffer::Unmap(GLsizeiptr size) {
 
     if (!persistent) {
         glUnmapBuffer(gl_target);
+    }
 
     buffer_pos += size;
 }
