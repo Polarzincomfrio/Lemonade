@@ -110,7 +110,7 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
         }
     }
 
-    inner class SettingsAdapter : RecyclerView.Adapter<SettingViewHolder>() {
+    inner class SettingsAdapter(ctx:Context) : RecyclerView.Adapter<SettingViewHolder>() {
         private var lemontweaksId: IntArray
         private var settingsId: ArrayList<SettingsItem>
 
@@ -120,9 +120,9 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
             settingsId = ArrayList()
 
             // native settings
-            settingsId.add(SettingsItem(SETTING_CORE_TICKS_HACK, getString(R.string.setting_core_ticks_hack), TYPE_SWITCH, lemontweaksId[i++]))
-            settingsId.add(SettingsItem(SETTING_SKIP_SLOW_DRAW, getString(R.string.setting_skip_slow_draw), TYPE_SWITCH, lemontweaksId[i++]))
-            settingsId.add(SettingsItem(SETTING_SKIP_TEXTURE_COPY, getString(R.string.setting_skip_texture_copy), TYPE_SWITCH, lemontweaksId[i++]))
+            settingsId.add(SettingsItem(SETTING_CORE_TICKS_HACK, ctx.getString(R.string.setting_core_ticks_hack), TYPE_SWITCH, lemontweaksId[i++]))
+            settingsId.add(SettingsItem(SETTING_SKIP_SLOW_DRAW, ctx.getString(R.string.setting_skip_slow_draw), TYPE_SWITCH, lemontweaksId[i++]))
+            settingsId.add(SettingsItem(SETTING_SKIP_TEXTURE_COPY, ctx.getString(R.string.setting_skip_texture_copy), TYPE_SWITCH, lemontweaksId[i++]))
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingViewHolder {
