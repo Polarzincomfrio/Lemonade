@@ -4,7 +4,6 @@
 
 #include "common/alignment.h"
 #include "common/assert.h"
-#include "common/logging/log.h"
 #include "common/microprofile.h"
 #include "common/settings.h"
 #include "video_core/renderer_opengl/gl_driver.h"
@@ -104,3 +103,5 @@ void OGLStreamBuffer::Unmap(GLsizeiptr size) {
 
     buffer_pos += size;
 }
+
+} // namespace OpenGL
