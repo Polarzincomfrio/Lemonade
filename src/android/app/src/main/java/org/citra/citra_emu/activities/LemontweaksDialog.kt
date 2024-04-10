@@ -16,7 +16,7 @@ import org.citra.citra_emu.R
 
 class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
-    private lateinit var adapter: SettingsAdapter
+    private lateinit var adapterId: SettingsAdapter
 
     companion object {
         // tweaks
@@ -35,7 +35,7 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
         val recyclerView: RecyclerView = findViewById(R.id.list_settings)
         recyclerView.layoutManager = LinearLayoutManager(getContext())
         adapter = SettingsAdapter(getContext())
-        recyclerView.adapter = adapter
+        recyclerView.adapter = adapterId
         recyclerView.addItemDecoration(DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL))
     }
 
