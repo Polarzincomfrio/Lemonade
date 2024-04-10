@@ -48,7 +48,7 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
         override fun findViews(root: View) {
             textSettingName = root.findViewById(R.id.text_setting_name)
-            materialSwitch = root.findViewById<SwitchMaterial>(R.id.switch_widget).also {
+            materialSwitch = root.findViewById<MaterialSwitch>(R.id.switch_widget).also {
                 it.setOnCheckedChangeListener(this)
             }
         }
