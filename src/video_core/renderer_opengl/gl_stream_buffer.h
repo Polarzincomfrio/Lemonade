@@ -13,7 +13,8 @@ class Driver;
 
 class OGLStreamBuffer : private NonCopyable {
 public:
-    explicit OGLStreamBuffer(GLenum target, GLsizeiptr size);
+    explicit OGLStreamBuffer(Driver& driver, GLenum target, GLsizeiptr size,
+                             bool prefer_coherent = false);
     ~OGLStreamBuffer();
 
     GLuint GetHandle() const;
@@ -27,7 +28,7 @@ public:
      * and the invalidation flag for previous chunks.
      * The actual used size must be specified on unmapping the chunk.
      */
-    std::tuple<u8*, GLintptr, bool> Map(GLsizeiptr size, GLintptr alignment);
+    std::tuple<u8*, GLintptr, bool> Map(GLsizeiptr size, GLintptr alignment = 0);
 
     void Unmap(GLsizeiptr size);
 
@@ -36,8 +37,14 @@ private:
     GLenum gl_target;
     GLenum gl_target_invalidate_hack;
 
+    bool coherent = false;
+    bool persistent = false;
+
     GLintptr buffer_pos = 0;
     GLsizeiptr buffer_size = 0;
+    GLintptr mapped_offset = 0;
+    GLsizeiptr mapped_size = 0;
+    u8* mapped_ptr = nullptr;
 };
 
 } // namespace OpenGL
