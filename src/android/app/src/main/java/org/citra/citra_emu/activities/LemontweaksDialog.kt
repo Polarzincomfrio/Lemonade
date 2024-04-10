@@ -26,10 +26,6 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
         // view type
         const val TYPE_SWITCH = 0
-
-        fun newInstance(): LemontweaksDialog {
-            return LemontweaksDialog()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
