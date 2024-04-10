@@ -34,7 +34,7 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
         val recyclerView: RecyclerView = findViewById(R.id.list_settings)
         recyclerView.layoutManager = LinearLayoutManager(getContext())
-        adapter = SettingsAdapter(getContext())
+        adapterId = SettingsAdapter(getContext())
         recyclerView.adapter = adapterId
         recyclerView.addItemDecoration(DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL))
     }
