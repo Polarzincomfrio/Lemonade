@@ -103,5 +103,3 @@ void OGLStreamBuffer::Unmap(GLsizeiptr size) {
 
     buffer_pos += size;
 }
-
-} // namespace OpenGL
