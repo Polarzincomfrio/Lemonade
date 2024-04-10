@@ -18,6 +18,20 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
     private lateinit var adapter: SettingsAdapter
 
+    companion object {
+        // tweaks
+        const val SETTING_CORE_TICKS_HACK = 0
+        const val SETTING_SKIP_SLOW_DRAW = 1
+        const val SETTING_SKIP_TEXTURE_COPY = 2
+
+        // view type
+        const val TYPE_SWITCH = 0
+
+        fun newInstance(): LemontweaksDialog {
+            return LemontweaksDialog()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_lemontweaks)
@@ -29,9 +43,34 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
         recyclerView.addItemDecoration(DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL))
     }
 
-    private data class SettingsItem(val settingId: Int, val name: String, val typeId: Int, var value: Int)
+    inner class SettingsItem(
+        private val settingId: Int,
+        private val nameId: String,
+        private val typeId: Int,
+        private var valueId: Int
+    ) {
+        fun getType(): Int {
+            return typeId
+        }
 
-    private abstract class SettingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        fun getSetting(): Int {
+            return settingId
+        }
+
+        fun getName(): String {
+            return nameId
+        }
+
+        fun getValue(): Int {
+            return valueId
+        }
+
+        fun setValue(value: Int) {
+            valueId = value
+        }
+    }
+
+    abstract class SettingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         init {
             itemView.setOnClickListener(this)
             findViews(itemView)
@@ -39,69 +78,92 @@ class LemontweaksDialog(context: Context) : BaseSheetDialog(context) {
 
         protected abstract fun findViews(root: View)
         abstract fun bind(item: SettingsItem)
+        override fun onClick(clicked: View) {
+            // handle click event
+        }
     }
 
-    private inner class SwitchSettingViewHolder(itemView: View) : SettingViewHolder(itemView), CompoundButton.OnCheckedChangeListener {
-        private lateinit var item: SettingsItem
-        private var textSettingName: TextView? = null
-        private var materialSwitch: MaterialSwitch? = null
+    inner class SwitchSettingViewHolder(itemView: View) : SettingViewHolder(itemView), CompoundButton.OnCheckedChangeListener {
+        private var itemId: SettingsItem? = null
+        private var textSettingNameId: TextView? = null
+        private var switchId: MaterialSwitch? = null
+
+        init {
+            findViews(itemView)
+        }
 
         override fun findViews(root: View) {
-            textSettingName = root.findViewById(R.id.text_setting_name)
-            materialSwitch = root.findViewById<MaterialSwitch>(R.id.switch_widget).also {
-                it.setOnCheckedChangeListener(this)
-            }
+            textSettingNameId = root.findViewById(R.id.text_setting_name)
+            switchId = root.findViewById(R.id.switch_widget)
+            switchId?.setOnCheckedChangeListener(this)
         }
 
         override fun bind(item: SettingsItem) {
-            this.item = item
-            textSettingName?.text = item.name
-            materialSwitch?.isChecked = item.value > 0
+            itemId = item
+            textSettingNameId?.text = item.getName()
+            switchId?.isChecked = item.getValue() > 0
         }
 
-        override fun onClick(v: View?) {
-            super.onClick(v)
-            materialSwitch?.let {
-                it.toggle()
-                item.value = if (it.isChecked) 1 else 0
-            }
+        override fun onClick(clicked: View) {
+            switchId?.toggle()
+            itemId?.setValue(if (switchId?.isChecked == true) 1 else 0)
         }
 
-        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            item.value = if (isChecked) 1 else 0
+        override fun onCheckedChanged(view: CompoundButton, isChecked: Boolean) {
+            itemId?.setValue(if (isChecked) 1 else 0)
         }
     }
 
-    private inner class SettingsAdapter(private val context: Context) : RecyclerView.Adapter<SettingViewHolder>() {
-        private val settings: MutableList<SettingsItem> = mutableListOf()
+    inner class SettingsAdapter : RecyclerView.Adapter<SettingViewHolder>() {
+        private var lemontweaksId: IntArray
+        private var settingsId: ArrayList<SettingsItem>
 
         init {
-            val tweaks = NativeLibrary.getLemontweaks()
-            tweaks.forEachIndexed { index, value ->
-                val name = when (index) {
-                    0 -> context.getString(R.string.setting_core_ticks_hack)
-                    1 -> context.getString(R.string.setting_skip_slow_draw)
-                    2 -> context.getString(R.string.setting_skip_texture_copy)
-                    else -> ""
-                }
-                settings.add(SettingsItem(index, name, 0, value))
-            }
+            var i = 0
+            lemontweaksId = NativeLibrary.getLemontweaks()
+            settingsId = ArrayList()
+
+            // native settings
+            settingsId.add(SettingsItem(SETTING_CORE_TICKS_HACK, getString(R.string.setting_core_ticks_hack), TYPE_SWITCH, lemontweaksId[i++]))
+            settingsId.add(SettingsItem(SETTING_SKIP_SLOW_DRAW, getString(R.string.setting_skip_slow_draw), TYPE_SWITCH, lemontweaksId[i++]))
+            settingsId.add(SettingsItem(SETTING_SKIP_TEXTURE_COPY, getString(R.string.setting_skip_texture_copy), TYPE_SWITCH, lemontweaksId[i++]))
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingViewHolder {
-            val itemView = LayoutInflater.from(context).inflate(R.layout.list_item_ingame_switch, parent, false)
-            return SwitchSettingViewHolder(itemView)
+            val inflater = LayoutInflater.from(parent.context)
+            return when (viewType) {
+                TYPE_SWITCH -> {
+                    val itemView = inflater.inflate(R.layout.list_item_ingame_switch, parent, false)
+                    SwitchSettingViewHolder(itemView)
+                }
+                else -> throw IllegalArgumentException("Invalid view type")
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return settingsId.size
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return settingsId[position].getType()
         }
 
         override fun onBindViewHolder(holder: SettingViewHolder, position: Int) {
-            holder.bind(settings[position])
+            holder.bind(settingsId[position])
         }
 
-        override fun getItemCount(): Int = settings.size
-
         fun saveSettings() {
-            val newSettings = settings.map { it.value }.toIntArray()
-            if (!newSettings.contentEquals(NativeLibrary.getLemontweaks())) {
+            // native settings
+            var isChanged = false
+            val newSettings = IntArray(lemontweaksId.size)
+            for (i in lemontweaksId.indices) {
+                newSettings[i] = settingsId[i].getValue()
+                if (newSettings[i] != lemontweaksId[i]) {
+                    isChanged = true
+                }
+            }
+            // apply settings if changes are detected
+            if (isChanged) {
                 NativeLibrary.setLemontweaks(newSettings)
             }
         }
