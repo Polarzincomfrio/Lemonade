@@ -1,3 +1,8 @@
+> [!NOTE]  
+> This is an archive from the old Lemonade repository that broke the GPLv2 license multiple times, i've archived this just so history of what was made isn't lost no efforts will be made in order to continue this
+
+---
+
 <h1 align="center">
     <b href="https://github.com/Lemonade-emu/Lemonade/blob/master/"><img src="https://github.com/Polarzincomfrio/Lemonade-Archive/blob/master/assets/Lemonade.png" alt="Lemonade" height="20%" width="20%"></b>
   <br>
