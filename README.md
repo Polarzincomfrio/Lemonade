@@ -1,5 +1,5 @@
 > [!NOTE]  
-> This is an archive from the old Lemonade repository that broke the GPLv2 license multiple times, i've archived this just so history of what was made isn't lost no efforts will be made in order to continue this
+> This is an archive from the old Lemonade repository that broke the GPLv2 license multiple times, i've archived this just so history of what was made isn't lost, no efforts will be made in order to continue this
 
 ---
 
